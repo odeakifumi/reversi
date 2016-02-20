@@ -51,16 +51,6 @@ def think_choice(board, me, opp):
 
 def play_othello():
 	board = [[0 for i in xrange(N)] for j in xrange(N)]
-	# board = [
-	# 0, 0, 0, 0, 0, 0, 0, 0,
-	# 0, 0, 0, 0, 0, 0, 0, 0,
-	# 0, 0, 0, 0, 0, 0, 0, 0,
-	# 0, 0, 0, 1, 2, 0, 0, 0,
-	# 0, 0, 0, 2, 1, 0, 0, 0,
-	# 0, 0, 0, 0, 0, 0, 0, 0,
-	# 0, 0, 0, 0, 0, 0, 0, 0,
-	# 0, 0, 0, 0, 0, 0, 0, 0,
-	# ]
 	board[3][3], board[4][4] = 1, 1
 	board[4][3], board[3][4] = 2, 2
 	display_board(board)
