@@ -5,15 +5,18 @@ import sys
 from random import randint
 
 N = 8
+SQUARE_TYPE=('.', 'O', 'X') #変更できないリスト
 
 
 # コメントを残そう
 
 
 def display_board(board):
+	print '  a b c d e f g h'
 	for i in xrange(N):
+		print i+1,
 		for j in xrange(N):
-			print('.', 'O', 'X')[board[i][j]],
+			print SQUARE_TYPE[board[i][j]],
 		print
 	print
 
@@ -71,7 +74,7 @@ def play_othello():
 		r = result
 		display_board(board)
 		player1, player2 = player2, player1
-		sys.stdin.readline()
+		sys.stdin.readline()  #入力待ち エンターが押されると，次にいく
 	print "%s %s" % ("O" * board.count(1), "X" * board.count(2))
 
 
