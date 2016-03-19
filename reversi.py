@@ -6,7 +6,7 @@ from random import randint
 
 N = 8
 SQUARE_TYPE=('.', 'O', 'X') #変更できないリスト
-
+kihu_dict = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7}
 
 # コメントを残そう
 
@@ -14,7 +14,7 @@ SQUARE_TYPE=('.', 'O', 'X') #変更できないリスト
 def display_board(board):
 	print '  a b c d e f g h'
 	for i in xrange(N):
-		print i+1,
+		print i,
 		for j in xrange(N):
 			print SQUARE_TYPE[board[i][j]],
 		print
@@ -74,7 +74,23 @@ def play_othello():
 		r = result
 		display_board(board)
 		player1, player2 = player2, player1
-		sys.stdin.readline()  #入力待ち エンターが押されると，次にいく
+		while True:
+			input_lines = sys.stdin.readline().split()#入力待ち エンターが押されると，次にいく
+			if len(input_lines) == 2:
+				input_1 = input_lines[0]
+				input_2 = input_lines[1]
+				n_list = [str(i) for i in range(8)]
+				if input_1 in kihu_dict:
+					if input_2 in n_list:
+						print kihu_dict[input_1],input_2
+						break
+					else:
+						print 'retry'
+				else:
+					print 'retry'
+			else:
+				print 'retry'
+
 	print "%s %s" % ("O" * board.count(1), "X" * board.count(2))
 
 
