@@ -21,8 +21,7 @@ def display_board(board):
 
 def is_legal_move(board, me, opp, x, y):
 	if board[x][y] != 0:  # 既に駒が存在
-		print "既に駒が存在"
-		return False
+		return False, None
 	cand = [] #着手可能な手の候補をリストにする。
 	# scan all directions
 	for xx, yy in ((0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)): #縦、横、上、下、斜めの、８方向に打てるかどうかを確かめる。
@@ -42,9 +41,9 @@ def is_legal_move(board, me, opp, x, y):
 				break
 			break	
 	if not cand: #candが受け取っているリストがらだったら。
-		return False
+		return False, None
 	else:
-		return True 
+		return True, cand
 
 
 def cpu_choice(board, me, opp):
@@ -86,90 +85,64 @@ def cpu_choice(board, me, opp):
 
 def user_choice(board, me, opp):
 	while True:
-			input_lines = sys.stdin.readline().split()#入力待ち エンターが押されると，次にいく
-			if len(input_lines) == 2:
-				input_1 = input_lines[0]
-				input_2 = input_lines[1]
-				n_list = [str(i) for i in range(8)]
-				if input_1 in kihu_dict:
-					if input_2 in n_list:
-						print kihu_dict[input_1],input_2
+		input_lines = sys.stdin.readline().split()#入力待ち エンターが押されると，次にいく
+		if len(input_lines) == 2:
+			input_1 = input_lines[0]
+			input_2 = input_lines[1]
+			n_list = [str(i) for i in range(8)]
+			if input_1 in kihu_dict:
+				if input_2 in n_list:
+					print kihu_dict[input_1],input_2
+					is_legal, cand = is_legal_move(board, me, opp, x=int(input_2), y=kihu_dict[input_1])
+					if is_legal:
 						break
-					else:
-						print 'retry'
 				else:
 					print 'retry'
 			else:
 				print 'retry'
-	is_legal = is_legal_move(board, me=player1, opp=player2, x=int(input_2), y=kihu_dict[input_1])
-	print is_legal
+		else:
+			print 'retry'
+	return (int(input_2), kihu_dict[input_1]), cand
 
 
 def play_othello():
 	player1, player2 = 1, 2
 	r = []
-	c = ['0','1','2']
 	print '先手か後手かを決めてください'
-	print '先手ならば 0 と、後手ならば 1 と、観戦をするならば 2 と、入力をしてください。'
+	print '先手ならば 1 と、後手ならば 2 と、観戦をするならば 3 と、入力をしてください。'
 	while True:
 		input_mode = sys.stdin.readline().split()[0]
+		c = ['1','2','3']
 		if input_mode in c:
-			if input_mode == '0':
-				board = [[0 for i in xrange(N)] for j in xrange(N)]
-				board[3][3], board[4][4] = 1, 1
-				board[4][3], board[3][4] = 2, 2
-				display_board(board)
-				while True:
-					choice, result = user_choice(board, me=player1, opp=player2)
-					if result:
-						board[choice[0]][choice[1]] = player1
-						for pos in result:
-							board[pos[0]][pos[1]] = player1
-					if not (r or result):
-						break
-					r = result
-					display_board(board)
-					#ここで指せるplayerを入れ替える
-					player1, player2 = player2, player1 #player1は今指すことができる、pleyer2は今は指すことができない
-				print "%s %s" % ("O" * board.count(1), "X" * board.count(2))
 			if input_mode == '1':
-				board = [[0 for i in xrange(N)] for j in xrange(N)]
-				board[3][3], board[4][4] = 1, 1
-				board[4][3], board[3][4] = 2, 2
-				display_board(board)
-				while True:
-					choice, result = user_choice(board, me=player1, opp=player2)
-					if result:
-						board[choice[0]][choice[1]] = player1
-						for pos in result:
-							board[pos[0]][pos[1]] = player1
-					if not (r or result):
-						break
-					r = result
-					display_board(board)
-					#ここで指せるplayerを入れ替える
-					player1, player2 = player2, player1 #player1は今指すことができる、pleyer2は今は指すことができない
-				print "%s %s" % ("O" * board.count(1), "X" * board.count(2))
+				break
 			if input_mode == '2':
-				board = [[0 for i in xrange(N)] for j in xrange(N)]
-				board[3][3], board[4][4] = 1, 1
-				board[4][3], board[3][4] = 2, 2
-				display_board(board)
-				while True:
-					choice, result = cpu_choice(board, me=player1, opp=player2)
-					if result:
-						board[choice[0]][choice[1]] = player1
-						for pos in result:
-							board[pos[0]][pos[1]] = player1
-					if not (r or result):
-						break
-					r = result
-					display_board(board)
-					#ここで指せるplayerを入れ替える
-					player1, player2 = player2, player1 #player1は今指すことができる、pleyer2は今は指すことができない
-				print "%s %s" % ("O" * board.count(1), "X" * board.count(2))
+				break
+			if input_mode == '3':
+				break
 		else:
 			print 'retry'
+	board = [[0 for i in xrange(N)] for j in xrange(N)]
+	board[3][3], board[4][4] = 1, 1
+	board[4][3], board[3][4] = 2, 2
+	display_board(board)
+	while True:
+		if int(input_mode) == player1:
+			choice, result = user_choice(board, me=player1, opp=player2)
+		else:
+			choice, result = cpu_choice(board, me=player1, opp=player2)
+		if result:
+			board[choice[0]][choice[1]] = player1
+			for pos in result:
+				board[pos[0]][pos[1]] = player1
+		if not (r or result):
+			break
+		r = result
+		display_board(board)
+		#ここで指せるplayerを入れ替える
+		player1, player2 = player2, player1 #player1は今指すことができる、pleyer2は今は指すことができない
+	print "%s %s" % ("O" * board.count(1), "X" * board.count(2))
+
 
 def main():
 	play_othello()
