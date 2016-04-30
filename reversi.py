@@ -35,19 +35,26 @@ def play_reversi():
 		else:
 			print 'retry'
 	board = [[0 for i in xrange(N)] for j in xrange(N)]
+	# board[1][0], board[1][1] = 1, 1
+	# board[0][0], board[0][1] = 1, 1
 	board[3][3], board[4][4] = 1, 1
 	board[4][3], board[3][4] = 2, 2
 	display_board(board)
+	r = True
 	while True:
 		if int(input_mode) == player1:
-			choice, result = move.cpu_choice(board, me=player1, opp=player2)
-			choice, result = move.user_choice(board, me=player1, opp=player2)
+			if move.cpu_choice(board, me=player1, opp=player2) == (None, []):
+				choice, result = None, []
+			else:
+				choice, result = move.user_choice(board, me=player1, opp=player2)
 		else:
 			choice, result = move.cpu_choice(board, me=player1, opp=player2)
-		if result:
+		if result:      
 			board[choice[0]][choice[1]] = player1
 			for pos in result:
 				board[pos[0]][pos[1]] = player1
+		else:
+			print 'pass'
 		if not (r or result):
 			break
 		r = result

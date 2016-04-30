@@ -28,7 +28,7 @@ def is_legal_move(board, me, opp, x, y):
 				cand.extend(cand_tmp)           #確実にひっくり返すことができるならば、ここでcandに、cand_tmpを連結する
 				break
 			break	
-	if not cand: #candが受け取っているリストがらだったら
+	if not cand: #candが受け取っているリストがからだったら
 		return False, None
 	else:
 		return True, cand
@@ -61,7 +61,6 @@ def cpu_choice(board, me, opp):
 					break
 				if not cand:
 					continue
-				# print xt, yt, cand, cand_tmp
 				# nearly random strategy :)
 				if (x, y) in ((0, 0), (0, N - 1), (N - 1, 0), (N - 1, N - 1)): #着手可能な手の中で一番いい手を探す
 					return (x, y), cand  # sumikko!
@@ -74,12 +73,11 @@ def user_choice(board, me, opp):
 	while True:
 		input_lines = sys.stdin.readline().split()#入力待ち エンターが押されると，次にいく
 		if len(input_lines) == 2:
-			input_1 = input_lines[0]
-			input_2 = input_lines[1]
+			input_1 = input_lines[1]
+			input_2 = input_lines[0]
 			n_list = [str(i) for i in range(8)]
 			if input_1 in KIFU_DICT:
 				if input_2 in n_list:
-					print KIFU_DICT[input_1],input_2
 					is_legal, cand = is_legal_move(board, me, opp, x=int(input_2), y=KIFU_DICT[input_1])
 					if is_legal:
 						break
