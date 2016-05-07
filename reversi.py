@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import time
 
 from config import *
 import move
@@ -17,38 +18,45 @@ def display_board(board):
 	print
 
 
+def init_board(need_handicap):
+	board = [[0 for i in xrange(N)] for j in xrange(N)]
+	board[3][3], board[4][4] = 2, 2
+	board[4][3], board[3][4] = 1, 1
+	if need_handicap:
+		board[0][0], board[7][7] = 2, 2
+		board[0][7], board[7][0] = 2, 2
+	return board
+
+
 def play_reversi():
 	player1, player2 = 1, 2
 	r = []
 	print '先手か後手かを決めてください'
-	print '先手ならば 1 と、後手ならば 2 と、観戦をするならば 3 と、入力をしてください。'
+	print '先手ならば 1 と、後手ならば 2 と、観戦をするならば 3 と、ハンデがいるなら4と、入力をしてください。'
 	while True:
-		input_mode = sys.stdin.readline().split()[0]
-		c = ['1','2','3']
-		if input_mode in c:
-			if input_mode == '1':
-				break
-			if input_mode == '2':
-				break
-			if input_mode == '3':
-				break
+		input_mode = int(sys.stdin.readline().split()[0])
+		if input_mode in [1, 2, 3, 4]:
+			break
 		else:
 			print 'retry'
-	board = [[0 for i in xrange(N)] for j in xrange(N)]
-	# board[1][0], board[1][1] = 1, 1
-	# board[0][0], board[0][1] = 1, 1
-	board[3][3], board[4][4] = 1, 1
-	board[4][3], board[3][4] = 2, 2
+
+	if input_mode == 4:
+		need_handicap = True
+		input_mode = 2
+	else:
+		need_handicap = False
+	board = init_board(need_handicap)
 	display_board(board)
 	r = True
 	while True:
-		if int(input_mode) == player1:
-			if move.cpu_choice(board, me=player1, opp=player2) == (None, []):
+		if input_mode == player1:
+			if move.cpu_random_choice(board, me=player1, opp=player2) == (None, []):
 				choice, result = None, []
 			else:
 				choice, result = move.user_choice(board, me=player1, opp=player2)
 		else:
-			choice, result = move.cpu_choice(board, me=player1, opp=player2)
+			time.sleep(T)
+			choice, result = move.cpu_random_choice(board, me=player1, opp=player2)
 		if result:      
 			board[choice[0]][choice[1]] = player1
 			for pos in result:
@@ -65,7 +73,17 @@ def play_reversi():
 
 
 def main():
-	play_reversi()
+	param = sys.argv
+	if 2 <= len(param):
+		if param[1] == 'play':
+			play_reversi()
+		elif param[1] == 'sim':
+			pass
+	else:
+		print 'retry'
+		print '[python reversi.py play]'
+		print '[python reversi.py sim]'
+		sys.exit()
 
 if __name__ == '__main__':
 	main()
